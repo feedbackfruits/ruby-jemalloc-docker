@@ -28,7 +28,7 @@ jobs:
     strategy:
       matrix:
         version: ${{ fromJSON(needs.gather-versions.outputs.versions) }}
-        image: [slim, ubuntu-22.04, ubuntu-24.04]
+        image: [slim]
         platform: [amd64, arm64]
         include: ${{ fromJSON(needs.gather-versions.outputs.metadata) }}
     runs-on: ${{ matrix.platform == 'arm64' && 'ubuntu-24.04-arm' || 'ubuntu-24.04' }}
@@ -36,13 +36,7 @@ jobs:
       - name: Set image_name
         id: context
         run: |
-          if [[ "${{ matrix.image }}" == "slim" ]] ; then
-            echo "image_name=ruby:${{ matrix.version }}-slim" >> ${GITHUB_OUTPUT}
-          elif [[ "${{ matrix.image }}" == "ubuntu-22.04" ]] ; then
-            echo "image_name=ubuntu:22.04" >> ${GITHUB_OUTPUT}
-          elif [[ "${{ matrix.image }}" == "ubuntu-24.04" ]] ; then
-            echo "image_name=ubuntu:24.04" >> ${GITHUB_OUTPUT}
-          fi
+          echo "image_name=ruby:${{ matrix.version }}-slim" >> ${GITHUB_OUTPUT}
 
           if [[ "${{ startsWith(matrix.version, '3.2') }}" == "true" ]] ; then
             echo "flags=--enable-yjit" >> ${GITHUB_OUTPUT}
@@ -70,7 +64,7 @@ jobs:
             ADDITIONAL_FLAGS=${{ steps.context.outputs.flags }}
           provenance: false
           outputs: |
-            type=image,name=ghcr.io/moritzheiber/ruby-jemalloc,push-by-digest=true,push=${{ github.ref == 'refs/heads/main' }}
+            type=image,name=ghcr.io/feedbackfruits/ruby-jemalloc,push-by-digest=true,push=${{ github.ref == 'refs/heads/main' }}
       - name: Export digest
         if: github.ref == 'refs/heads/main'
         run: |
@@ -93,7 +87,7 @@ jobs:
     strategy:
       matrix:
         version: ${{ fromJSON(needs.gather-versions.outputs.versions) }}
-        image: [slim, ubuntu-22.04, ubuntu-24.04]
+        image: [slim]
     steps:
       - name: Login to GHCR
         uses: docker/login-action@v3
@@ -111,5 +105,5 @@ jobs:
       - name: Create and push manifest
         working-directory: /tmp/digests/${{ matrix.version }}-${{ matrix.image }}
         run: |
-          docker buildx imagetools create -t ghcr.io/moritzheiber/ruby-jemalloc:${{ matrix.version }}-${{ matrix.image }} \
-            $(printf 'ghcr.io/moritzheiber/ruby-jemalloc@sha256:%s ' *)
+          docker buildx imagetools create -t ghcr.io/feedbackfruits/ruby-jemalloc:${{ matrix.version }}-${{ matrix.image }} \
+            $(printf 'ghcr.io/feedbackfruits/ruby-jemalloc@sha256:%s ' *)
