@@ -48,4 +48,7 @@ RUN apt-get update && \
 	rm -rf /tmp/build && \
 	apt-get clean
 
+ENV LD_PRELOAD="libjemalloc.so.2"
+ENV MALLOC_CONF="dirty_decay_ms:0,muzzy_decay_ms:0,narenas:2,background_thread:true,thp:never"
+
 WORKDIR /
