@@ -20,7 +20,7 @@ jobs:
       versions: ${{ steps.ruby-versions.outputs.versions }}
       metadata: ${{ steps.ruby-versions.outputs.metadata }}
     steps:
-      - uses: moritzheiber/ruby-versions-action@v1
+      - uses: moritzheiber/ruby-versions-action@aa578bff78ea03e003a9a0d6fea9513b77be7cd0 # v1
         name: Fetch latest Ruby versions
         id: ruby-versions
 
@@ -42,15 +42,15 @@ jobs:
           if [[ "${{ startsWith(matrix.version, '3.2') }}" == "true" ]] ; then
             echo "flags=--enable-yjit" >> ${GITHUB_OUTPUT}
           fi
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
       - name: Login to GHCR
-        uses: docker/login-action@v3
+        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - uses: docker/setup-buildx-action@v3
-      - uses: docker/build-push-action@v6
+      - uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3
+      - uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6
         name: Build
         id: build
         with:
@@ -74,7 +74,7 @@ jobs:
           touch "/tmp/digests/${{ matrix.version }}-${{ matrix.image }}-${{ matrix.platform }}/${digest#sha256:}"
       - name: Upload digest
         if: github.ref == 'refs/heads/main'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: digests-${{ matrix.version }}-${{ matrix.image }}-${{ matrix.platform }}
           path: /tmp/digests/${{ matrix.version }}-${{ matrix.image }}-${{ matrix.platform }}/*
@@ -91,14 +91,14 @@ jobs:
         image: [slim]
     steps:
       - name: Login to GHCR
-        uses: docker/login-action@v3
+        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - uses: docker/setup-buildx-action@v3
+      - uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3
       - name: Download digests
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
           path: /tmp/digests/${{ matrix.version }}-${{ matrix.image }}
           pattern: digests-${{ matrix.version }}-${{ matrix.image }}-*
