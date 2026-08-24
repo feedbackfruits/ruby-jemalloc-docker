@@ -20,7 +20,7 @@ jobs:
       versions: ${{ steps.ruby-versions.outputs.versions }}
       metadata: ${{ steps.ruby-versions.outputs.metadata }}
     steps:
-      - uses: moritzheiber/ruby-versions-action@aa578bff78ea03e003a9a0d6fea9513b77be7cd0 # v1
+      - uses: moritzheiber/ruby-versions-action@456bdaf86444ac96b227a6e9f31c8cab76c7525e # v2.0.0
         name: Fetch latest Ruby versions
         id: ruby-versions
 
